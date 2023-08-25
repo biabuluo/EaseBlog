@@ -291,13 +291,30 @@ Separation of front and back
 >          logic-delete-value: 0
 >          logic-not-delete-value: 0
 >          id-type: auto
->          
+>    
 >    ```
 >
->    
+> 
 >
 > 3. SQL语句
+>
+>    使用easycode插件生成代码
 >
 > 4. 创建实体类
 >
 > 5. 创建Controller测试接口
+
+
+
+
+
+
+
+#### 热门文章列表功能
+
+##### 需求
+
+> - 可查询浏览量前十的文章信息：展示标题+浏览量
+> - 按浏览量降序排序
+> - 能点击跳转
+> - 注意不能将草稿文章展示（status=0）
