@@ -4,9 +4,7 @@ import com.biabuluo.domain.ResponseResult;
 import com.biabuluo.domain.entity.Article;
 import com.biabuluo.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,10 +22,22 @@ public class ArticleController {
     private ArticleService articleService;
 
     //获取热度文章列表
-    @GetMapping("/hotArticleList")
-    public ResponseResult hotArticleList(){
+    @GetMapping("/getHotArticleList")
+    public ResponseResult getHotArticleList(){
         //service查询热门文章
         return articleService.hotArticleList();
+    }
+
+    //获取首页或者分类文章列表
+    @GetMapping("/getArticleList")
+    public ResponseResult getArticleList(@RequestParam Integer pageNum, @RequestParam Integer pageSize, Long categoryId){
+        return articleService.articleList(pageNum, pageSize, categoryId);
+    }
+
+    //获取文章详情
+    @GetMapping("/getArticleDetails/{id}")
+    public ResponseResult getArticleDetails(@PathVariable Long id){
+        return articleService.ArticleDetails(id);
     }
 
 }

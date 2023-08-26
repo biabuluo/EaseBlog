@@ -1,6 +1,9 @@
 server:
   port: 7777
 spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
   datasource:
     url: jdbc:mysql://localhost:3306/easeblog?characterEncoding=utf-8&serverTimezones=Asia/Shanghai
     username: root

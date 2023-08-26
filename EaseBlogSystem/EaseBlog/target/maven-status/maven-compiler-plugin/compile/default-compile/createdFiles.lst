@@ -1,3 +1,7 @@
+com\biabuluo\controller\LoginController.class
 com\biabuluo\Main.class
+com\biabuluo\controller\CategoryController.class
+com\biabuluo\controller\LinkController.class
+com\biabuluo\config\SecurityConfig.class
 com\biabuluo\controller\ArticleController.class
 com\biabuluo\EaseBlogApplication.class

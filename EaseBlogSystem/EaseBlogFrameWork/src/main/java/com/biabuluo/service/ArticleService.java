@@ -12,5 +12,9 @@ import com.biabuluo.domain.entity.Article;
  *
  */
 public interface ArticleService extends IService<Article> {
+    ResponseResult ArticleDetails(Long id);
+
     ResponseResult hotArticleList();
+
+    ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId);
 }
