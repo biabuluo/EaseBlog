@@ -17,49 +17,87 @@ Separation of front and back
 
 
 
-## Swagger使用小记录
+## Swagger2使用小记录
 
-启动项目后访问：http://localhost:8080/swagger-ui.html
+### 快速入门
+
+启动项目后访问：http://localhost:yourPort/swagger-ui.html
 
 1. 添加依赖
 
+   ```xml
+   <dependency>
+       <groupId>io.springfox</groupId>
+       <artifactId>springfox-swagger2</artifactId>
+       <version>2.9.2</version>
+   </dependency>
+   <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+   <dependency>
+       <groupId>io.springfox</groupId>
+       <artifactId>springfox-swagger-ui</artifactId>
+       <version>2.9.2</version>
+   </dependency>
+   ```
+
 2. 配置swagger
 
+   启动类中添加注解@EnableSwagger2
+   
    ```java
-   @Configuration
+   @SpringBootApplication
+   @EnableScheduling
    @EnableSwagger2
-   public class SwaggerConfig {
-       @Bean
-       public Docket productApi() {
-           return new Docket(DocumentationType.SWAGGER_2)
-                   .apiInfo(apiInfo())
-                   .select()
-                   .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))  //添加ApiOperiation注解的被扫描
-                   .paths(PathSelectors.any())
-                   .build();
-   
+   public class EaseBlogApplication {
+       public static void main(String[] args) {
+           SpringApplication.run(EaseBlogApplication.class);
        }
-   
-       private ApiInfo apiInfo() {
-           return new ApiInfoBuilder().title("EaseBlog--api文档")
-                   .description("前后端分离博客系统接口描述")
-                   .version("1.0")
-                   .contact(new Contact("biabuluo","https://github.com/biabuluo","1802362935@qq.com"))
-                   .build();
-       }
-   
    }
+   
    ```
 
 
 
 
 
+### 细节配置
 
+#### Controller信息配置
 
+> **@Api注解**
+>
+> 属性：tags（设置标签） description（设置描述信息）
 
+#### 接口信息配置
 
+> **@ApiOperation**
+>
+> 属性：value（接口标签）notes（接口描述信息）
 
+#### 接口参数信息配置
+
+> @ApiImplicitParams(
+>
+> ​	@ApiImplicitParam(name="变量名", value = "描述 ")
+>
+> ​	...
+>
+> )
+
+#### 实体类配置
+
+> @ApiModel描述实体类
+>
+> ​	属性：description
+>
+> @ApiModelProperty描述实体属性
+>
+> ​	属性：notes
+
+#### 文档信息配置
+
+> **使用swagger配置类**
+>
+> 
 
 
 
@@ -330,7 +368,7 @@ Separation of front and back
 >          logic-delete-value: 0
 >          logic-not-delete-value: 0
 >          id-type: auto
->                                     
+>                                           
 >    ```
 >
 > 
@@ -939,6 +977,7 @@ public void configureMessageConverters(List<HttpMessageConverter<?>> converters)
 
 
 
+### 系统后台
 
 
 
@@ -953,11 +992,12 @@ public void configureMessageConverters(List<HttpMessageConverter<?>> converters)
 
 
 
-### 辅助设计
 
-#### AOP实现日志记录
+## 辅助设计
 
-##### 需求
+### AOP实现日志记录
+
+#### 需求
 
 > 需要通过日志记录接口调用信息。便于后期调试排查。
 >
@@ -967,7 +1007,7 @@ public void configureMessageConverters(List<HttpMessageConverter<?>> converters)
 >
 > URL+BusinessName+HttpMethod+ClassMethod+IP+RequestArgs+Response
 
-##### 设计
+#### 设计
 
 > - aop依赖
 >
@@ -992,7 +1032,7 @@ public void configureMessageConverters(List<HttpMessageConverter<?>> converters)
 
 
 
-#### cron表达式
+### cron表达式
 
 cron表达式是用来设置定时任务执行时间的表达式
 

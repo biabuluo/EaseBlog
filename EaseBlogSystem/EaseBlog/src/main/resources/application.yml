@@ -23,7 +23,7 @@ mybatis-plus:
       logic-delete-value: 0
       logic-not-delete-value: 0
       id-type: auto
-      update-strategy: not_null
+
 oss:
   accessKey: wubfppxLHBwJD7zqNK4gvaTapKZCB2mSbTfdRgg5
   secretKey: gZ2qJgl5HMwjrZ7THzlL6SNwWinbwmwfhigSDgsB
