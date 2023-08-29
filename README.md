@@ -1,4 +1,4 @@
-# EaseBlog
+# EaseBlog后端开发记录
 Separation of front and back 
 
 基于对三更草堂老师的前后端分离项目复刻
@@ -330,7 +330,7 @@ Separation of front and back
 >          logic-delete-value: 0
 >          logic-not-delete-value: 0
 >          id-type: auto
->       
+>                                     
 >    ```
 >
 > 
@@ -563,7 +563,7 @@ Separation of front and back
 
 
 
-##### 3. fastjson配置
+##### 3. fastjson配置（mvc）
 
 ```java
 @Bean
@@ -681,6 +681,16 @@ public void configureMessageConverters(List<HttpMessageConverter<?>> converters)
 >    - 从redis中获取用户信息
 >    - 存入SecurityContextHolder
 
+###### 认证授权失败处理
+
+> 自定义异常处理
+>
+> - AuthenticationEntryPoint认证失败处理器
+> - AccessDeniedHandler授权失败处理器
+> - 配置给security
+
+
+
 ##### 准备工作
 
 ###### 依赖引入
@@ -694,3 +704,307 @@ public void configureMessageConverters(List<HttpMessageConverter<?>> converters)
 > - jwt工具类
 > - redisCache封装类
 > - WebUtils：向响应体书写
+
+
+
+
+
+#### 统一异常处理
+
+> 在controller层也需要做许多判断校验，可以使用抛出异常的方式来对异常统一处理
+>
+> 把异常中的信息封装给ResponseResult响应给前端
+
+处理细节：
+
+> - 创建一个系统异常继承RunTimeException
+> - 构造时可以传入异常枚举类
+> - 抛出异常可以统一处理：创建GlobalExceptionHandler封装成ResponseResult返回
+
+
+
+
+
+#### 退出登录功能设计
+
+##### 需求
+
+> - post
+> - /logout
+> - 请求头：需要token请求头
+
+
+
+
+
+#### 评论列表功能
+
+##### 需求
+
+> - 接口：/comment/getCommentList
+> - 不需要请求头+token
+> - 评论有分页需求
+> - 评论最多两级
+> - 请求参数封装：querystring类型：articleid+pagenum+pagesize
+
+##### 响应格式（重要）
+
+> rows：{articleId
+>
+> +children
+>
+> +contents
+>
+> +createBy
+>
+> +createTime
+>
+> +id+
+>
+> rootId（-1）
+>
+> +toCommentId（根评论-1）
+>
+> +toCommentUserId
+>
+> +username
+>
+> }
+>
+> total
+
+
+
+
+
+#### 发送评论接口功能
+
+##### 需求
+
+> - 用户登录之后才能够发表评论+对评论回复 需要token
+> - 也可以在友链页面进行评论
+> - 接口设计：/comment/addComment post
+> - 请求参数：articleId+type+rootId+toCommentId+toCommentUserId+content
+> - 响应格式：code+msg
+
+##### 注意
+
+> 可以添加一个securityUtil类获取securityContext中userid
+
+
+
+
+
+##### 友链评论列表
+
+##### 需求
+
+> - /comment/getLinkCommentList
+> - 不需要token
+
+
+
+
+
+#### 个人信息查询接口
+
+##### 需求
+
+> - get：/user/getUserInfo
+> - 需要token
+> - 响应参数：avatar、email、id、nickname、sex
+
+
+
+#### 头像上传接口
+
+##### 注意
+
+> 一般来说，企业级不会将对象直接存储到web服务器中
+>
+> 而是使用OSS对象存储服务
+
+##### 过程
+
+> - 添加七牛云对象存储的依赖
+>
+>   ```java
+>   <dependency>
+>     <groupId>com.qiniu</groupId>
+>     <artifactId>qiniu-java-sdk</artifactId>
+>     <version>[7.13.0, 7.13.99]</version>
+>   </dependency>
+>   ```
+>
+>  - 使用服务器直传
+>
+>  -  查看文档
+
+##### 需求
+
+> - 请求方式：POST 请求地址：/upload
+> - 需要token
+> - 请求头：Content-Type：mutipart/form-data
+> - 传递参数：MultipartFile img
+
+
+
+
+
+#### 更新个人信息接口
+
+##### 需求
+
+> - 编辑完个人信息后点击保存会更新个人信息
+> - 接口设计：PUT：/user/setUserInfo
+> - 需要token
+> - 请求体参数：avatar+email+id+nickName+sex
+
+
+
+
+
+
+
+#### 用户注册
+
+##### 需求
+
+> - 要求用户名，昵称，邮箱不能和数据库中原有数据重复
+> - 重复有对应提示
+> - 要求用户名，密码，昵称，邮箱不能为空
+> - 注意密码必须明文存储到数据库中
+> - 请求方式：POST：/user/register
+> - 不需要token
+> - email+nickName+password+userName
+
+
+
+#### 博客浏览量功能需求
+
+##### 需求
+
+> 在用户浏览博客时实现对应博客浏览量新增
+>
+> - 请求方式：PUT：/article/updateViewCount/{id}
+
+##### 分析
+
+> 并发量大时如何配置：
+>
+> 解决方案：使用redis作为缓存
+>
+
+##### 需要解决问题
+
+> - 在应用启动时把博客的浏览量存储到redis中
+> - 更新浏览量时去更新redis中的数据
+> - 每隔10分钟把redis中浏览量更新到数据库中（使用定时任务）
+> - 访问浏览量：直接读取redis（解决写锁问题）
+
+##### CommandLineRunner接口在应用启动时预处理
+
+> 该接口会在程序的所有bean加载完全之后再进行调用
+>
+> 记得@Component
+
+
+
+
+
+##### 定时任务
+
+> **实现步骤**（指定执行什么代码-什么时间进行）
+>
+> **Spring框架提供的**
+>
+> 1. 使用@EnableScheduling注解开启定时任务功能（在启动类上添加）
+>
+> 2. 确定定时任务执行代码，并配置任务执行时间
+>
+>    - 新建job包
+>
+>    - 确定任务
+>
+>      ```java
+>      @Component
+>      public class Testjob{
+>          //涉及cron表达式
+>          @Scheduled(cron = "0/5 * * * * ?")
+>          public void testJob(){
+>          	//要执行的代码
+>      	}
+>      }
+>      ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 辅助设计
+
+#### AOP实现日志记录
+
+##### 需求
+
+> 需要通过日志记录接口调用信息。便于后期调试排查。
+>
+> 并且可能有很多接口进行日志记录
+>
+> 接口被调用时日志打印格式如下：
+>
+> URL+BusinessName+HttpMethod+ClassMethod+IP+RequestArgs+Response
+
+##### 设计
+
+> - aop依赖
+>
+> - 定义注解
+>
+> - 定义切面类
+>
+>   获取request：
+>
+>   ```java
+>   ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+>   HttpServletRequest request = requestAttributes.getRequest();
+>   ```
+>
+> - 使用注解
+
+
+
+
+
+
+
+
+
+#### cron表达式
+
+cron表达式是用来设置定时任务执行时间的表达式
+
+> - cron表达式由七个部分构成（spring6个部分）
+> - 秒（0-59）分 小时 日期 月期 月份 星期 年份
+> - 通用特殊字符：,/*-
+> - *任意符
+> - ,定义列表
+> - -表示范围
+> - /表示每隔多少时间
+
+> **cron表达式特殊字符**
+>
+> - 日期：？L（表示最后） W（当月最接近的工作日）
+> - 星期：？L #（表示第几个星期五）

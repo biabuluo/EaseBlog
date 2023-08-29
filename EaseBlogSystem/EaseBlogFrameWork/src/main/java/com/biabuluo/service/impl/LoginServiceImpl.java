@@ -1,5 +1,6 @@
 package com.biabuluo.service.impl;
 
+import com.biabuluo.constans.SystemConstants;
 import com.biabuluo.domain.ResponseResult;
 import com.biabuluo.domain.entity.LoginUser;
 import com.biabuluo.domain.entity.User;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 
 import java.util.Map;
 import java.util.Objects;
@@ -49,14 +52,35 @@ public class LoginServiceImpl implements LoginService {
         //获取Userid生成token
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         Long userId = loginUser.getUser().getId();
+//        System.out.println("---------------------------");
+//        System.out.println(userId);
         String jwt = JwtUtil.createJWT(userId.toString());
+//        System.out.println("---------------------------");
+//        System.out.println(jwt);
 
         //用户信息存入redis
-        redisCache.setCacheObject("EaseBlog_Login"+userId, loginUser);
+        redisCache.setCacheObject(SystemConstants.REDIS_USERID_KEY_PRE +userId, loginUser);
         //User信息+token返回
         LoginUserVo loginUserVo = new LoginUserVo();
         UserInfoVo userInfoVo = BeanCopyUtil.copyBean(loginUser.getUser(), UserInfoVo.class);
         loginUserVo.setUserInfoVo(userInfoVo);
+        loginUserVo.setToken(jwt);
         return ResponseResult.okResult(loginUserVo);
+    }
+
+    //登出
+    @Override
+    public ResponseResult logout() {
+        //获取token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();;
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+
+        //获取userid
+        Long userId = loginUser.getUser().getId();
+
+        //删除redis用户信息
+        redisCache.deleteObject(SystemConstants.REDIS_USERID_KEY_PRE+userId);
+
+        return ResponseResult.okResult();
     }
 }

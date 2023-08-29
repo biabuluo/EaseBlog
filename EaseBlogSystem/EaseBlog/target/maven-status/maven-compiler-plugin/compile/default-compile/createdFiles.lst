@@ -1,5 +1,7 @@
 com\biabuluo\controller\LoginController.class
 com\biabuluo\Main.class
+com\biabuluo\filter\JwtauthenticationTokenFilter.class
+com\biabuluo\controller\CommentController.class
 com\biabuluo\controller\CategoryController.class
 com\biabuluo\controller\LinkController.class
 com\biabuluo\config\SecurityConfig.class

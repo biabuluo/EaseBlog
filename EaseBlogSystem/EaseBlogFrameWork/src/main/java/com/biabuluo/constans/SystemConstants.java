@@ -39,4 +39,19 @@ public class SystemConstants {
     public static final String USER_STATUS_FORBID = "1";
 
 
+    //评论信息: 根评论
+    public static final int COMMENT_ISROOT = -1;
+    //友链评论
+    public static final String COMMENT_LINK = "1";
+    //普通文章评论
+    public static final String COMMENT_NORMAL = "0";
+
+
+    //redis中viewCount的key
+    public static final String REDIS_VIEWCOUNT_KEY = "article:viewCount";
+    //redis中用户信息key前缀
+    public static final String REDIS_USERID_KEY_PRE = "EaseBlog_Login:";
+
+
+
 }

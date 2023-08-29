@@ -2,7 +2,10 @@ package com.biabuluo.controller;
 
 import com.biabuluo.domain.ResponseResult;
 import com.biabuluo.domain.entity.User;
+import com.biabuluo.enums.AppHttpCodeEnum;
+import com.biabuluo.exception.SystemException;
 import com.biabuluo.service.LoginService;
+import io.jsonwebtoken.lang.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +25,16 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseResult login(@RequestBody User user){
-        System.out.println(user.getPassword());
+        if(!Strings.hasText(user.getUserName())){
+            throw new SystemException(AppHttpCodeEnum.USERNAME_NOT_NULL);
+        }
+
         return loginService.login(user);
+    }
+
+
+    @PostMapping("/logout")
+    public ResponseResult logout(){
+        return loginService.logout();
     }
 }

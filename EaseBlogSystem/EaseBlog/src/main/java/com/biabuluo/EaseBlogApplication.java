@@ -2,6 +2,7 @@ package com.biabuluo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author 小宇
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 @SpringBootApplication
+@EnableScheduling
 public class EaseBlogApplication {
     public static void main(String[] args) {
         SpringApplication.run(EaseBlogApplication.class);

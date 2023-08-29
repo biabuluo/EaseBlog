@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.biabuluo.domain.ResponseResult;
 import com.biabuluo.domain.entity.Article;
 
+import java.util.Map;
+
 /**
  * @author 小宇
  * @date 2023-08-25:22:51
@@ -17,4 +19,8 @@ public interface ArticleService extends IService<Article> {
     ResponseResult hotArticleList();
 
     ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId);
+
+    ResponseResult updateArticleViewCount(Long id);
+
+    Integer updateBatchViewCount(Map<String, Integer> cacheMap);
 }

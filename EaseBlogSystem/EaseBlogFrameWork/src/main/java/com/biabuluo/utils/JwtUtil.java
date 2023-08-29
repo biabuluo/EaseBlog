@@ -11,10 +11,13 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * JWT工具类
+ */
 public class JwtUtil {
 
     //有效期为
-    public static final Long JWT_TTL = 60 * 60 *1000L;// 60 * 60 *1000  一个小时
+    public static final Long JWT_TTL = 24*60 * 60 *1000L;// 60 * 60 *1000  一个小时
     //设置秘钥明文
     public static final String JWT_KEY = "sangeng";
 
@@ -75,6 +78,12 @@ public class JwtUtil {
         return builder.compact();
     }
 
+    public static void main(String[] args) throws Exception {
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJjYWM2ZDVhZi1mNjVlLTQ0MDAtYjcxMi0zYWEwOGIyOTIwYjQiLCJzdWIiOiJzZyIsImlzcyI6InNnIiwiaWF0IjoxNjM4MTA2NzEyLCJleHAiOjE2MzgxMTAzMTJ9.JVsSbkP94wuczb4QryQbAke3ysBDIL5ou8fWsbt_ebg";
+        Claims claims = parseJWT(token);
+        System.out.println(claims);
+    }
+
     /**
      * 生成加密后的秘钥 secretKey
      * @return
@@ -99,4 +108,6 @@ public class JwtUtil {
                 .parseClaimsJws(jwt)
                 .getBody();
     }
+
+
 }

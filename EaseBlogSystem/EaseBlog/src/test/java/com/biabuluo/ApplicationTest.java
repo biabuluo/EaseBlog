@@ -19,6 +19,6 @@ public class ApplicationTest {
 
     @Test
     public void encoderTest(){
-        System.out.println(passwordEncoder.encode("1234"));
+        System.out.println(passwordEncoder.matches("1234", "$2a$10$oRUmZ3NW8beHQFjd/LMYUeali3zW/lQSKPbHoaoo6ujlLsC9YAGOy"));
     }
 }
